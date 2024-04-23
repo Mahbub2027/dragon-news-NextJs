@@ -2,116 +2,65 @@ import { Box, Card, CardActionArea, CardContent, CardMedia, Grid, Typography } f
 import topNewsImg from '@/assets/top-news.png';
 import topNewsImg2 from '@/assets/top-news2.png';
 import Image from 'next/image';
+import { getAllNews } from '@/utils/getAllNews';
 
-const LatestNews = () => {
+const LatestNews = async () => {
+    const { data } = await getAllNews();
+    // console.log(data);
     return (
         <Box className="my-3">
             <Card >
                 <CardActionArea>
                     <CardMedia>
-                        <Image src={topNewsImg} width={800} alt='top news img' />
+                        <Image src={data[0].thumbnail_url} width={800} height={500} alt='top news img' />
                     </CardMedia>
                     <CardContent>
-                        <p className='w-24 bg-red-600 text-white pl-1 my-3 rounded'>Technology</p>
+                        <p className='w-24 bg-red-600 text-white pl-1 my-3 rounded'>{data[0].category}</p>
                         <Typography gutterBottom variant="h5" component="div">
-                            Bitcoin climbs as Elon Musk Says Tesla likely to Accept it again.
+                            {data[0].title}
                         </Typography>
                         <Typography gutterBottom>
-                            By Awlad Hossain | March 18, 2023
+                            By {data[0].author.name} | {data[0].author.published_date}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            It is a long established fact that is a reader will be distracted by the readable content of page when loocking at its layout ...
+                            {data[0].details.length > 200 ? data[0].details.slice(0, 200) + "..." : data[0].details}
                         </Typography>
                     </CardContent>
                 </CardActionArea>
             </Card>
 
             <Grid className='mt-5' container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid item xs={6}>
-                    <Card >
-                <CardActionArea>
-                    <CardMedia>
-                        <Image src={topNewsImg2} width={400} alt='top news img' />
-                    </CardMedia>
-                    <CardContent>
-                        <p className='w-24 bg-red-600 text-white pl-1 my-3 rounded'>Technology</p>
-                        <Typography gutterBottom variant="body1" component="div">
-                            Bitcoin climbs as Elon Musk Says Tesla likely to Accept it again.
-                        </Typography>
-                        <Typography gutterBottom>
-                            By Awlad Hossain | March 18, 2023
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            It is a long established fact that is a reader will be distracted by the readable content of page when loocking at its layout ...
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-                </Grid>
-                <Grid item xs={6}>
-                    <Card >
-                <CardActionArea>
-                    <CardMedia>
-                        <Image src={topNewsImg2} width={400} alt='top news img' />
-                    </CardMedia>
-                    <CardContent>
-                        <p className='w-24 bg-red-600 text-white pl-1 my-3 rounded'>Technology</p>
-                        <Typography gutterBottom variant="body1" component="div">
-                            Bitcoin climbs as Elon Musk Says Tesla likely to Accept it again.
-                        </Typography>
-                        <Typography gutterBottom>
-                            By Awlad Hossain | March 18, 2023
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            It is a long established fact that is a reader will be distracted by the readable content of page when loocking at its layout ...
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-                </Grid>
-                <Grid item xs={6}>
-                    <Card >
-                <CardActionArea>
-                    <CardMedia>
-                        <Image src={topNewsImg2} width={400} alt='top news img' />
-                    </CardMedia>
-                    <CardContent>
-                        <p className='w-24 bg-red-600 text-white pl-1 my-3 rounded'>Technology</p>
-                        <Typography gutterBottom variant="body1" component="div">
-                            Bitcoin climbs as Elon Musk Says Tesla likely to Accept it again.
-                        </Typography>
-                        <Typography gutterBottom>
-                            By Awlad Hossain | March 18, 2023
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            It is a long established fact that is a reader will be distracted by the readable content of page when loocking at its layout ...
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-                </Grid>
-                <Grid item xs={6}>
-                    <Card >
-                <CardActionArea>
-                    <CardMedia>
-                        <Image src={topNewsImg2} width={400} alt='top news img' />
-                    </CardMedia>
-                    <CardContent>
-                        <p className='w-24 bg-red-600 text-white pl-1 my-3 rounded'>Technology</p>
-                        <Typography gutterBottom variant="body1" component="div">
-                            Bitcoin climbs as Elon Musk Says Tesla likely to Accept it again.
-                        </Typography>
-                        <Typography gutterBottom>
-                            By Awlad Hossain | March 18, 2023
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            It is a long established fact that is a reader will be distracted by the readable content of page when loocking at its layout ...
-                        </Typography>
-                    </CardContent>
-                </CardActionArea>
-            </Card>
-                </Grid>
-                
+                {
+                    data.slice(0, 6).map(news =>
+                        <Grid key={news._id} item xs={6}>
+                            <Card >
+                                <CardActionArea>
+                                    <CardMedia sx={{
+                                        "& img": {
+                                            "width": "100%",
+                                            "height": "200px"
+                                        }
+                                    }}>
+                                        <Image src={news.thumbnail_url} width={400} height={300} alt='top news img' />
+                                    </CardMedia>
+                                    <CardContent>
+                                        <p className='w-24 bg-red-600 text-white pl-1 my-3 rounded'>{news.category}</p>
+                                        <Typography gutterBottom variant="body1" component="div">
+                                            {news.title}
+                                        </Typography>
+                                        <Typography gutterBottom>
+                                            By {news.author.name} | {news.author.published_date}
+                                        </Typography>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {news.details.length > 100 ? news.details.slice(0,100) : news.details}
+                                        </Typography>
+                                    </CardContent>
+                                </CardActionArea>
+                            </Card>
+                        </Grid>)
+                }
+
+
             </Grid>
         </Box>
     );
